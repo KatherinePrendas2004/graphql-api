@@ -15,7 +15,7 @@ const typeDefs = gql`
         nombre: String!
         url: String!
         descripcion: String
-        playlistId: ID
+        playlistId: ID!
         userId: ID!
     }
 
@@ -29,7 +29,7 @@ const typeDefs = gql`
 
     type Query {
         profiles: [UserRestricted]
-        videos: [Video]
+        videos(playlistId: ID): [Video]
         playlists: [Playlist]
         searchVideos(query: String!): [Video]
     }

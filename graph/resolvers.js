@@ -4,29 +4,38 @@ const { findPlaylistsByUserId } = require('../controllers/playlistController');
 
 const resolvers = {
     Query: {
-        profiles: async (_, __, { userId }) => {
-            if (!userId) throw new Error('Autenticación requerida');
-            return await findUserRestrictedByUserId(userId);
+        profiles: async (_, __, context) => {
+            if (!context.user || !context.user.userId) {
+                console.log('Contexto:', context.user); // Depuración
+                throw new Error('Autenticación fallida o userId no proporcionado.');
+            }
+            return await findUserRestrictedByUserId(context.user.userId);
         },
-        videos: async (_, __, { userId }) => {
-            if (!userId) throw new Error('Autenticación requerida');
-            return await findAllVideos();
+        videos: async (_, { playlistId }, { user }) => {
+            if (!user || !user.userId) {
+                console.log('Contexto:', user); // Depuración
+                throw new Error('Autenticación fallida o userId no proporcionado.');
+            }
+            return await findAllVideos(user.userId, playlistId);
         },
-        playlists: async (_, __, { userId }) => {
-            if (!userId) throw new Error('Autenticación requerida');
-            return await findPlaylistsByUserId(userId);
+        playlists: async (_, __, { user }) => {
+            if (!user || !user.userId) {
+                console.log('Contexto:', user); // Depuración
+                throw new Error('Autenticación fallida o userId no proporcionado.');
+            }
+            return await findPlaylistsByUserId(user.userId);
         },
-        searchVideos: async (_, { query }, { userId }) => {
-            if (!userId) throw new Error('Autenticación requerida');
+        searchVideos: async (_, { query }, { user }) => {
+            if (!user || !user.userId) {
+                console.log('Contexto:', user); // Depuración
+                throw new Error('Autenticación fallida o userId no proporcionado.');
+            }
             return await findVideosByText(query);
         }
     },
-    Video: {
-        playlistId: async (video) => video.playlistId
-    },
     Playlist: {
         perfilesAsociados: async (playlist) => {
-            return playlist.perfilesAsociados.map(id => ({ id, nombreCompleto: '', pin: '', avatar: '', edad: 0, userId: '' })); // Placeholder, implementa la carga real
+            return playlist.perfilesAsociados;
         }
     }
 };
