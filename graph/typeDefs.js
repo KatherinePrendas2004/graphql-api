@@ -5,8 +5,8 @@ const typeDefs = gql`
         id: ID!
         nombreCompleto: String!
         pin: String!
-        avatar: String
-        edad: Int!
+        avatar: String!
+        edad: Int
         userId: ID!
     }
 
@@ -15,21 +15,23 @@ const typeDefs = gql`
         nombre: String!
         url: String!
         descripcion: String
-        playlist: Playlist
+        playlistId: ID
+        userId: ID!
     }
 
     type Playlist {
         id: ID!
         nombre: String!
         userId: ID!
-        perfilesAsociados: [ID]
+        perfilesAsociados: [UserRestricted]
+        totalVideos: Int
     }
 
     type Query {
         profiles: [UserRestricted]
         videos: [Video]
         playlists: [Playlist]
-        searchVideos(texto: String!): [Video]
+        searchVideos(query: String!): [Video]
     }
 `;
 

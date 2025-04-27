@@ -1,8 +1,8 @@
 const Video = require('../models/videoModel');
 
-const findAllVideos = async () => {
+const findAllVideos = async (userId) => {
     try {
-        return await Video.find();
+        return await Video.find({ userId }); // Filtrar por userId
     } catch (error) {
         throw new Error('Error al buscar videos: ' + error.message);
     }

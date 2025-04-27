@@ -4,23 +4,29 @@ const { findPlaylistsByUserId } = require('../controllers/playlistController');
 
 const resolvers = {
     Query: {
-        profiles: async (_, __, context) => {
-            if (!context.user || !context.user.userId) {
-                throw new Error('Autenticación fallida o userId no proporcionado.');
-            }
-            return await findUserRestrictedByUserId(context.user.userId);
+        profiles: async (_, __, { userId }) => {
+            if (!userId) throw new Error('Autenticación requerida');
+            return await findUserRestrictedByUserId(userId);
         },
-        videos: async () => {
+        videos: async (_, __, { userId }) => {
+            if (!userId) throw new Error('Autenticación requerida');
             return await findAllVideos();
         },
-        playlists: async (_, __, { user }) => {
-            if (!user || !user.userId) {
-                throw new Error('Autenticación fallida o userId no proporcionado.');
-            }
-            return await findPlaylistsByUserId(user.userId);
+        playlists: async (_, __, { userId }) => {
+            if (!userId) throw new Error('Autenticación requerida');
+            return await findPlaylistsByUserId(userId);
         },
-        searchVideos: async (_, { texto }) => {
-            return await findVideosByText(texto);
+        searchVideos: async (_, { query }, { userId }) => {
+            if (!userId) throw new Error('Autenticación requerida');
+            return await findVideosByText(query);
+        }
+    },
+    Video: {
+        playlistId: async (video) => video.playlistId
+    },
+    Playlist: {
+        perfilesAsociados: async (playlist) => {
+            return playlist.perfilesAsociados.map(id => ({ id, nombreCompleto: '', pin: '', avatar: '', edad: 0, userId: '' })); // Placeholder, implementa la carga real
         }
     }
 };
