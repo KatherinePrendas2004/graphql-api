@@ -14,7 +14,9 @@ const typeDefs = gql`
         id: ID!
         nombre: String!
         url: String!
+        videoId: String
         descripcion: String
+        thumbnail: String
         playlistId: ID!
         userId: ID!
     }
