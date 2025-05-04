@@ -53,7 +53,7 @@ const server = new ApolloServer({
         }
     },
     cors: {
-        origin: 'http://localhost:5500', // Puerto de tu frontend
+        origin: ['http://localhost:5500', 'http://127.0.0.1:5500'], // Permitir ambos orígenes
         credentials: true
     }
 });
